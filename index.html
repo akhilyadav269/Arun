@@ -174,7 +174,7 @@ async function refreshDash(){await loadCfg();const today=new Date().toISOString(
 async function nextCustomer(){const next=(cfg.current_token||0)+1;await sb.from('settings').update({current_token:next}).eq('id',1);await refreshDash();}
 function toggleSettings(){document.getElementById('settingsPanel').classList.toggle('hidden');}
 async function saveSettings(){await sb.from('settings').update({salon_name:document.getElementById('salonName').value,whatsapp_number:document.getElementById('sWhatsapp').value,avg_wait_minutes:parseInt(document.getElementById('sAvgWait').value)}).eq('id',1);alert('Saved! ✅');toggleSettings();await refreshDash();}
-function genQR(){QRCode.toCanvas(document.getElementById('qrCanvas'),window.location.origin,{width:200,margin:2});}
+function genQR(){QRCode.toCanvas(document.getElementById('qrCanvas'),'https://arun-pi.vercel.app',{width:200,margin:2});}
 document.getElementById('phoneInput')?.addEventListener('keypress',e=>{if(e.key==='Enter')bookSlot();});
 </script>
 </body>
