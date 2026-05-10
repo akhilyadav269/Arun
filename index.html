@@ -140,7 +140,7 @@
 <script>
 const SURL='https://papimnhnmnbkmtczshaa.supabase.co',SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhcGltbmhubW5ia210Y3pzaGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjE5ODYsImV4cCI6MjA5Mzg5Nzk4Nn0.FWW7betV-K59LepczG9oKKYe7V1kI1krJ031tDRPVjk';
 const sb=supabase.createClient(SURL,SKEY);
-const isDash=window.location.pathname.includes('owner-dashboard-secret');
+const isDash=window.location.hash.includes('owner-dashboard-secret');
 if(isDash){document.getElementById('bookingPage').classList.add('hidden');document.getElementById('dashboardPage').classList.remove('hidden');initDashboard();}
 let cfg={whatsapp_number:'919784619102',avg_wait_minutes:25,current_token:0,salon_name:'Arun Saloon'};
 async function loadCfg(){const{data}=await sb.from('settings').select('*').eq('id',1).single();if(data)cfg=data;return cfg;}
