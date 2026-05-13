@@ -1,117 +1,698 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arun Saloon - Owner Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arun Saloon – Owner Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #f5f0eb; color: #0a0a0a; min-height: 100vh; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; background: #f5f0eb; }
-    .dash-brand { font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: 3px; }
-    .dash-subtitle { font-size: 10px; letter-spacing: 2px; color: #888; }
-    .settings-btn { background: #fff; border: 1px solid #ddd; border-radius: 2px; padding: 8px 14px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .settings-panel { background: #fff; margin: 12px; border-radius: 4px; padding: 20px; border: 1px solid #e0d8d0; display: none; }
-    .s-label { display: block; font-size: 11px; color: #888; margin-bottom: 6px; margin-top: 12px; }
-    .s-input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 2px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; }
-    .save-btn { width: 100%; margin-top: 16px; padding: 12px; background: #0a0a0a; color: #f0e8dc; border: none; border-radius: 2px; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; }
-    .serving-card { background: #0a0a0a; color: #f0e8dc; margin: 12px; border-radius: 4px; padding: 24px; }
-    .serving-label { font-size: 11px; letter-spacing: 3px; color: #888; margin-bottom: 4px; }
-    .serving-number { font-family: 'Bebas Neue', cursive; font-size: 80px; line-height: 1; }
-    .serving-phone { font-size: 14px; color: #aaa; margin-bottom: 16px; margin-top: 4px; }
-    .next-btn { width: 100%; padding: 14px; background: #e63329; color: #fff; border: none; border-radius: 2px; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 20px; font-family: 'DM Sans', sans-serif; letter-spacing: 2px; }
-    .stats-row { display: flex; gap: 12px; }
-    .stat-box { flex: 1; background: rgba(255,255,255,0.08); border-radius: 2px; padding: 12px; }
-    .stat-label { font-size: 10px; color: #888; margin-bottom: 4px; letter-spacing: 2px; }
-    .stat-value { font-family: 'Bebas Neue', cursive; font-size: 32px; }
-    .queue-section { margin: 0 12px 32px; background: #fff; border-radius: 4px; border: 1px solid #e0d8d0; overflow: hidden; }
-    .queue-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #e0d8d0; }
-    .queue-title { font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: 1px; }
-    .queue-badge { font-size: 10px; background: #f0e8dc; padding: 4px 10px; border-radius: 20px; color: #555; }
-    .queue-empty { padding: 24px; text-align: center; color: #888; font-size: 14px; }
-    .token-row { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid #f0e8dc; gap: 12px; }
-    .token-badge-d { font-family: 'Bebas Neue', cursive; font-size: 24px; background: #f0e8dc; padding: 8px 12px; border-radius: 2px; min-width: 60px; text-align: center; }
-    .token-info { flex: 1; }
-    .token-phone { font-size: 15px; font-weight: 500; }
-    .token-time { font-size: 12px; color: #888; margin-top: 2px; }
-    .token-wait { text-align: right; }
-    .token-wait-label { font-size: 10px; color: #888; }
-    .token-wait-value { font-family: 'Bebas Neue', cursive; font-size: 22px; }
+
+    :root {
+      --black: #0a0a0a;
+      --cream: #f2ede8;
+      --red: #c0392b;
+      --red-dark: #96281b;
+      --gold: #b8975a;
+      --gray-dark: #1a1a1a;
+      --gray-mid: #2c2c2c;
+      --gray-light: #e8e2da;
+      --text-muted: #888;
+      --font-display: 'Playfair Display', serif;
+      --font-script: 'Cormorant Garamond', serif;
+      --font-heading: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    body {
+      background: var(--cream);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      color: var(--black);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      background: var(--cream);
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 22px;
+      color: var(--black);
+      letter-spacing: -2px;
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      line-height: 1;
+    }
+
+    .brand-text p {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .settings-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: 1.5px solid var(--black);
+      background: transparent;
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--black);
+      transition: all 0.2s;
+    }
+
+    .settings-btn:hover {
+      background: var(--black);
+      color: var(--cream);
+    }
+
+    /* ── HERO PANEL ── */
+    .hero-panel {
+      background: var(--black);
+      margin: 16px;
+      border-radius: 12px;
+      padding: 28px 24px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192,57,43,0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .now-serving-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .ticket-number {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 90px;
+      line-height: 1;
+      color: var(--cream);
+      letter-spacing: -2px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .ticket-number.bump {
+      transform: scale(1.08);
+      color: #fff;
+    }
+
+    .next-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 18px;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .next-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+    }
+
+    .next-btn:hover { background: var(--red-dark); }
+    .next-btn:active { transform: scale(0.98); }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .stat-card {
+      background: var(--gray-mid);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-family: var(--font-script);
+      font-size: 38px;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    /* ── QUEUE SECTION ── */
+    .queue-section {
+      margin: 0 16px 16px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .queue-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .queue-title {
+      font-family: var(--font-script);
+      font-size: 26px;
+      color: var(--black);
+      font-weight: 400;
+    }
+
+    .badge {
+      background: var(--gray-light);
+      color: var(--black);
+      font-size: 10px;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .badge.has-people {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .queue-empty {
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .queue-list {
+      padding: 0;
+    }
+
+    .queue-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--gray-light);
+      animation: slideIn 0.3s ease;
+    }
+
+    .queue-item:last-child { border-bottom: none; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .queue-num {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      color: var(--red);
+      width: 36px;
+    }
+
+    .queue-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      padding-left: 8px;
+    }
+
+    .queue-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ── ADD CUSTOMER ── */
+    .add-section {
+      margin: 0 16px 24px;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1.5px dashed var(--gray-mid);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+      background: rgba(192,57,43,0.03);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: flex-end;
+      z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1; pointer-events: all;
+    }
+
+    .modal {
+      background: var(--cream);
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 36px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: #ccc;
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .modal h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--gray-light);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      background: #fff;
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .modal input:focus { border-color: var(--black); }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      padding: 13px;
+      border: 1.5px solid var(--gray-light);
+      background: transparent;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .btn-confirm {
+      padding: 13px;
+      border: none;
+      background: var(--black);
+      color: var(--cream);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* ── SETTINGS PANEL ── */
+    .settings-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: flex-end;
+      z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .settings-overlay.open {
+      opacity: 1; pointer-events: all;
+    }
+
+    .settings-panel {
+      background: var(--cream);
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 40px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1);
+    }
+
+    .settings-overlay.open .settings-panel {
+      transform: translateY(0);
+    }
+
+    .settings-panel h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .setting-row label {
+      font-size: 14px;
+      color: var(--black);
+    }
+
+    .setting-row span {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .setting-input {
+      width: 70px;
+      padding: 7px 10px;
+      border: 1.5px solid var(--gray-light);
+      border-radius: 6px;
+      font-size: 14px;
+      text-align: center;
+      background: #fff;
+      outline: none;
+    }
+
+    .reset-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      border: 1.5px solid var(--red);
+      background: transparent;
+      color: var(--red);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover { background: var(--red); color: #fff; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--black);
+      color: var(--cream);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      z-index: 200;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34,1.2,0.64,1);
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
 <body>
-<div class="dash-header">
-  <div>
-    <div class="dash-brand">✂ ARUN SALOON</div>
-    <div class="dash-subtitle">OWNER DASHBOARD</div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">✂</div>
+      <div class="brand-text">
+        <h1>Arun Saloon</h1>
+        <p>Owner Dashboard</p>
+      </div>
+    </div>
+    <button class="settings-btn" onclick="openSettings()">⚙ Settings</button>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero-panel">
+    <div class="now-serving-label">Now Serving</div>
+    <div class="ticket-number" id="ticketNum">#0</div>
+    <button class="next-btn" onclick="nextCustomer()">Next Customer</button>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Waiting</div>
+        <div class="stat-value" id="waitingCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Wait</div>
+        <div class="stat-value" id="avgWait">25m</div>
+      </div>
+    </div>
   </div>
-  <button class="settings-btn" onclick="toggleSettings()">⚙ SETTINGS</button>
-</div>
-<div id="settingsPanel" class="settings-panel">
-  <div style="font-family:'Bebas Neue',cursive;font-size:24px;margin-bottom:16px;">Settings</div>
-  <label class="s-label">Salon Ka Naam</label>
-  <input class="s-input" id="salonName" value="Arun Saloon" />
-  <label class="s-label">WhatsApp Number</label>
-  <input class="s-input" id="sWhatsapp" placeholder="919784619102" />
-  <label class="s-label">Average Wait Time (minutes)</label>
-  <input class="s-input" type="number" id="sAvgWait" value="25" />
-  <button class="save-btn" onclick="saveSettings()">Save Karo</button>
-</div>
-<div class="serving-card">
-  <div class="serving-label">NOW SERVING</div>
-  <div class="serving-number" id="nowServing">#0</div>
-  <div class="serving-phone" id="servingPhone"></div>
-  <button class="next-btn" onclick="nextCustomer()">NEXT CUSTOMER</button>
-  <div class="stats-row">
-    <div class="stat-box"><div class="stat-label">WAITING</div><div class="stat-value" id="waitingCount">0</div></div>
-    <div class="stat-box"><div class="stat-label">AVG WAIT</div><div class="stat-value" id="avgWaitDisplay">25m</div></div>
+
+  <!-- QUEUE -->
+  <div class="queue-section">
+    <div class="queue-header">
+      <div class="queue-title">Saloon</div>
+      <div class="badge" id="queueBadge">0 Waiting</div>
+    </div>
+    <div id="queueList" class="queue-list">
+      <div class="queue-empty" id="emptyMsg">Abhi koi waiting nahi hai 🎉</div>
+    </div>
   </div>
-</div>
-<div class="queue-section">
-  <div class="queue-header">
-    <span class="queue-title">Saloon</span>
-    <span class="queue-badge" id="queueBadge">0 WAITING</span>
+
+  <!-- ADD BUTTON -->
+  <div class="add-section">
+    <button class="add-btn" onclick="openModal()">+ Customer Add Karein</button>
   </div>
-  <div id="queueList"><div class="queue-empty">Abhi koi waiting nahi hai 🎉</div></div>
-</div>
-<script>
-const SURL='https://papimnhnmnbkmtczshaa.supabase.co';
-const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhcGltbmhubW5ia210Y3pzaGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjE5ODYsImV4cCI6MjA5Mzg5Nzk4Nn0.FWW7betV-K59LepczG9oKKYe7V1kI1krJ031tDRPVjk';
-const sb=supabase.createClient(SURL,SKEY);
-let cfg={whatsapp_number:'919784619102',avg_wait_minutes:25,current_token:0,salon_name:'Arun Saloon'};
-async function loadCfg(){const{data}=await sb.from('settings').select('*').eq('id',1).single();if(data)cfg=data;return cfg;}
-async function initDashboard(){
-  await loadCfg();
-  const today=new Date().toISOString().split('T')[0];
-  if(cfg.last_reset!==today){await sb.from('settings').update({current_token:0,last_reset:today}).eq('id',1);cfg.current_token=0;}
-  document.getElementById('sWhatsapp').value=cfg.whatsapp_number||'';
-  document.getElementById('sAvgWait').value=cfg.avg_wait_minutes||25;
-  document.getElementById('salonName').value=cfg.salon_name||'Arun Saloon';
-  await refreshDash();
-  setInterval(refreshDash,5000);
-}
-async function refreshDash(){
-  await loadCfg();
-  const today=new Date().toISOString().split('T')[0];
-  const{data:toks}=await sb.from('tokens').select('*').eq('date',today).order('token_number',{ascending:true});
-  const cur=cfg.current_token||0;
-  const waiting=(toks||[]).filter(t=>t.token_number>cur);
-  const curCust=(toks||[]).find(t=>t.token_number===cur);
-  document.getElementById('nowServing').textContent='#'+cur;
-  document.getElementById('servingPhone').textContent=curCust?'📞 +'+curCust.phone:'';
-  document.getElementById('waitingCount').textContent=waiting.length;
-  document.getElementById('avgWaitDisplay').textContent=cfg.avg_wait_minutes+'m';
-  document.getElementById('queueBadge').textContent=waiting.length+' WAITING';
-  const list=document.getElementById('queueList');
-  if(!waiting.length){list.innerHTML='<div class="queue-empty">Abhi koi waiting nahi hai 🎉</div>';return;}
-  list.innerHTML=waiting.map((t,i)=>`<div class="token-row"><div class="token-badge-d">#${t.token_number}</div><div class="token-info"><div class="token-phone">📞 ${t.phone}</div><div class="token-time">${new Date(t.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="token-wait"><div class="token-wait-label">APPROX</div><div class="token-wait-value">${(i+1)*cfg.avg_wait_minutes}m</div></div></div>`).join('');
-}
-async function nextCustomer(){const next=(cfg.current_token||0)+1;await sb.from('settings').update({current_token:next}).eq('id',1);await refreshDash();}
-function toggleSettings(){const p=document.getElementById('settingsPanel');p.style.display=p.style.display==='block'?'none':'block';}
-async function saveSettings(){await sb.from('settings').update({salon_name:document.getElementById('salonName').value,whatsapp_number:document.getElementById('sWhatsapp').value,avg_wait_minutes:parseInt(document.getElementById('sAvgWait').value)}).eq('id',1);alert('Saved!');toggleSettings();await refreshDash();}
-initDashboard();
-</script>
+
+  <!-- ADD MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h3>Customer Add Karein</h3>
+      <input type="text" id="customerName" placeholder="Customer ka naam (optional)" />
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-confirm" onclick="addCustomer()">Add Karein</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div class="settings-overlay" id="settingsOverlay" onclick="closeSettingsOutside(event)">
+    <div class="settings-panel">
+      <div class="modal-handle"></div>
+      <h3>Settings</h3>
+      <div class="setting-row">
+        <div>
+          <label>Avg Service Time</label>
+          <span>Minutes per customer</span>
+        </div>
+        <input type="number" class="setting-input" id="avgTime" value="25" min="1" onchange="updateAvgWait()"/>
+      </div>
+      <div class="setting-row">
+        <div>
+          <label>Saloon ka Naam</label>
+          <span>Dashboard title</span>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">🔄 Queue Reset Karein</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentNum = 0;
+    let queue = [];
+    let nextId = 1;
+    let avgTimePerCustomer = 25;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function renderQueue() {
+      const list = document.getElementById('queueList');
+      const empty = document.getElementById('emptyMsg');
+      const badge = document.getElementById('queueBadge');
+      const waitingCount = document.getElementById('waitingCount');
+      const avgWait = document.getElementById('avgWait');
+
+      badge.textContent = queue.length + ' Waiting';
+      badge.className = 'badge' + (queue.length > 0 ? ' has-people' : '');
+      waitingCount.textContent = queue.length;
+      avgWait.textContent = (queue.length * avgTimePerCustomer) + 'm';
+
+      if (queue.length === 0) {
+        list.innerHTML = '<div class="queue-empty" id="emptyMsg">Abhi koi waiting nahi hai 🎉</div>';
+        return;
+      }
+
+      list.innerHTML = queue.map((c, i) => `
+        <div class="queue-item">
+          <div class="queue-num">#${currentNum + i + 1}</div>
+          <div class="queue-name">${c.name || 'Guest'}</div>
+          <div class="queue-time">~${(i + 1) * avgTimePerCustomer}m</div>
+        </div>
+      `).join('');
+    }
+
+    function nextCustomer() {
+      if (queue.length === 0) {
+        currentNum++;
+        document.getElementById('ticketNum').textContent = '#' + currentNum;
+        bumpAnimation();
+        showToast('Koi waiting nahi hai abhi!');
+        renderQueue();
+        return;
+      }
+      queue.shift();
+      currentNum++;
+      const el = document.getElementById('ticketNum');
+      el.textContent = '#' + currentNum;
+      bumpAnimation();
+      showToast('✅ Next customer bulaya gaya — #' + currentNum);
+      renderQueue();
+    }
+
+    function bumpAnimation() {
+      const el = document.getElementById('ticketNum');
+      el.classList.add('bump');
+      setTimeout(() => el.classList.remove('bump'), 400);
+    }
+
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('customerName').focus(), 350);
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.getElementById('customerName').value = '';
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function addCustomer() {
+      const name = document.getElementById('customerName').value.trim();
+      queue.push({ id: nextId++, name: name || '' });
+      closeModal();
+      showToast('✅ Customer add ho gaya! Queue: ' + queue.length);
+      renderQueue();
+    }
+
+    function openSettings() {
+      document.getElementById('settingsOverlay').classList.add('open');
+    }
+
+    function closeSettingsOutside(e) {
+      if (e.target === document.getElementById('settingsOverlay')) {
+        document.getElementById('settingsOverlay').classList.remove('open');
+      }
+    }
+
+    function updateAvgWait() {
+      avgTimePerCustomer = parseInt(document.getElementById('avgTime').value) || 25;
+      renderQueue();
+    }
+
+    function resetAll() {
+      if (!confirm('Queue aur counter reset karein?')) return;
+      queue = [];
+      currentNum = 0;
+      nextId = 1;
+      document.getElementById('ticketNum').textContent = '#0';
+      document.getElementById('settingsOverlay').classList.remove('open');
+      showToast('🔄 Queue reset ho gaya!');
+      renderQueue();
+    }
+
+    // Enter key support
+    document.getElementById('customerName').addEventListener('keydown', e => {
+      if (e.key === 'Enter') addCustomer();
+      if (e.key === 'Escape') closeModal();
+    });
+
+    renderQueue();
+  </script>
 </body>
 </html>
