@@ -6,7 +6,6 @@
   <title>Arun Saloon - Token Booking</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: #0a0a0a; color: #f5f0eb; min-height: 100vh; }
@@ -22,6 +21,7 @@
     input[type=tel] { flex: 1; padding: 14px 12px; font-size: 16px; border: none; outline: none; background: transparent; color: #0a0a0a; font-family: 'DM Sans', sans-serif; }
     .error { color: #e63329; font-size: 13px; margin-bottom: 8px; }
     .primary-btn { width: 100%; padding: 16px; background: #0a0a0a; color: #f0e8dc; border: none; border-radius: 2px; font-size: 14px; letter-spacing: 2px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-bottom: 16px; font-family: 'DM Sans', sans-serif; }
+    .primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .secondary-btn { width: 100%; padding: 14px; background: transparent; color: #0a0a0a; border: 1.5px solid #ccc; border-radius: 2px; font-size: 13px; cursor: pointer; margin-top: 8px; margin-bottom: 16px; font-family: 'DM Sans', sans-serif; }
     .footer-text { font-size: 12px; color: #aaa; text-align: center; }
     .confirmed-badge { display: inline-flex; align-items: center; gap: 6px; background: #d4edda; color: #155724; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; }
@@ -34,45 +34,11 @@
     .call-box { background: #fff; border: 1px solid #e0d8d0; border-radius: 2px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #0a0a0a; }
     .call-box-label { font-size: 10px; letter-spacing: 1.5px; color: #888; margin-bottom: 6px; }
     .call-box-number { font-size: 18px; font-weight: 600; }
-    .dashboard { min-height: 100vh; background: #f5f0eb; color: #0a0a0a; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; }
-    .dash-brand { font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: 3px; }
-    .dash-subtitle { font-size: 10px; letter-spacing: 2px; color: #888; }
-    .settings-btn { background: #fff; border: 1px solid #ddd; border-radius: 2px; padding: 8px 14px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .settings-panel { background: #fff; margin: 12px; border-radius: 4px; padding: 20px; border: 1px solid #e0d8d0; }
-    .s-label { display: block; font-size: 11px; color: #888; margin-bottom: 6px; margin-top: 12px; }
-    .s-input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 2px; font-size: 15px; font-family: 'DM Sans', sans-serif; }
-    .save-btn { width: 100%; margin-top: 16px; padding: 12px; background: #0a0a0a; color: #f0e8dc; border: none; border-radius: 2px; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .serving-card { background: #0a0a0a; color: #f0e8dc; margin: 12px; border-radius: 4px; padding: 24px; }
-    .serving-label { font-size: 11px; letter-spacing: 3px; color: #888; margin-bottom: 4px; }
-    .serving-number { font-family: 'Bebas Neue', cursive; font-size: 80px; line-height: 1; }
-    .serving-phone { font-size: 14px; color: #aaa; margin-bottom: 16px; }
-    .next-btn { width: 100%; padding: 14px; background: #e63329; color: #fff; border: none; border-radius: 2px; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 20px; font-family: 'DM Sans', sans-serif; }
-    .stats-row { display: flex; gap: 12px; }
-    .stat-box { flex: 1; background: rgba(255,255,255,0.08); border-radius: 2px; padding: 12px; }
-    .stat-label { font-size: 10px; color: #888; margin-bottom: 4px; }
-    .stat-value { font-family: 'Bebas Neue', cursive; font-size: 32px; }
-    .queue-section { margin: 0 12px 12px; background: #fff; border-radius: 4px; border: 1px solid #e0d8d0; }
-    .queue-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #e0d8d0; }
-    .queue-title { font-family: 'Bebas Neue', cursive; font-size: 20px; }
-    .queue-badge { font-size: 10px; background: #f0e8dc; padding: 4px 10px; border-radius: 20px; color: #555; }
-    .queue-empty { padding: 24px; text-align: center; color: #888; font-size: 14px; }
-    .token-row { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid #f0e8dc; gap: 12px; }
-    .token-badge-d { font-family: 'Bebas Neue', cursive; font-size: 24px; background: #f0e8dc; padding: 8px 12px; border-radius: 2px; min-width: 60px; text-align: center; }
-    .token-info { flex: 1; }
-    .token-phone { font-size: 15px; font-weight: 500; }
-    .token-time { font-size: 12px; color: #888; margin-top: 2px; }
-    .token-wait { text-align: right; }
-    .token-wait-label { font-size: 10px; color: #888; }
-    .token-wait-value { font-family: 'Bebas Neue', cursive; font-size: 22px; }
-    .qr-section { margin: 0 12px 32px; background: #fff; border-radius: 4px; border: 1px solid #e0d8d0; padding: 20px; text-align: center; }
-    .qr-title { font-family: 'Bebas Neue', cursive; font-size: 20px; margin-bottom: 8px; }
-    .qr-desc { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5; }
     .hidden { display: none; }
   </style>
 </head>
 <body>
-<div id="bookingPage" class="page">
+<div class="page">
   <div class="card">
     <div class="brand">✂ ARUN SALOON</div>
     <div id="bookingForm">
@@ -100,63 +66,41 @@
         <div class="call-box-label">SLOT TIMING JAANNE KE LIYE CALL KAREIN</div>
         <div class="call-box-number" id="ownerPhone">+91XXXXXXXXXX</div>
       </div>
-      <button class="secondary-btn" onclick="resetBooking()">check your toekn</button>
+      <button class="secondary-btn" onclick="resetBooking()">Check Your Token</button>
       <p class="footer-text">Tokens har raat 12 baje reset hote hain</p>
     </div>
   </div>
 </div>
-<div id="dashboardPage" class="dashboard hidden">
-  <div class="dash-header">
-    <div><div class="dash-brand">✂ ARUN SALOON</div><div class="dash-subtitle">OWNER DASHBOARD</div></div>
-    <button class="settings-btn" onclick="toggleSettings()">⚙ SETTINGS</button>
-  </div>
-  <div id="settingsPanel" class="settings-panel hidden">
-    <div style="font-family:'Bebas Neue',cursive;font-size:24px;margin-bottom:16px;">Settings</div>
-    <label class="s-label">Salon Ka Naam</label><input class="s-input" id="salonName" value="Arun Saloon" />
-    <label class="s-label">WhatsApp Number</label><input class="s-input" id="sWhatsapp" placeholder="919784619102" />
-    <label class="s-label">Average Wait Time (minutes)</label><input class="s-input" type="number" id="sAvgWait" value="25" />
-    <button class="save-btn" onclick="saveSettings()">Save Karo</button>
-  </div>
-  <div class="serving-card">
-    <div class="serving-label">NOW SERVING</div>
-    <div class="serving-number" id="nowServing">#0</div>
-    <div class="serving-phone" id="servingPhone"></div>
-    <button class="next-btn" onclick="nextCustomer()">NEXT CUSTOMER →</button>
-    <div class="stats-row">
-      <div class="stat-box"><div class="stat-label">WAITING</div><div class="stat-value" id="waitingCount">0</div></div>
-      <div class="stat-box"><div class="stat-label">AVG WAIT</div><div class="stat-value" id="avgWaitDisplay">25m</div></div>
-    </div>
-  </div>
-  <div class="queue-section">
-    <div class="queue-header"><span class="queue-title">Queue</span><span class="queue-badge" id="queueBadge">0 WAITING</span></div>
-    <div id="queueList"><div class="queue-empty">Abhi koi waiting nahi hai</div></div>
-  </div>
-  <div class="qr-section">
-    <div class="qr-title"># Customer QR Code</div>
-    <p class="qr-desc">Print karke salon mein lagao.</p>
-    <canvas id="qrCanvas"></canvas>
-  </div>
-</div>
 <script>
-const SURL='https://papimnhnmnbkmtczshaa.supabase.co',SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhcGltbmhubW5ia210Y3pzaGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjE5ODYsImV4cCI6MjA5Mzg5Nzk4Nn0.FWW7betV-K59LepczG9oKKYe7V1kI1krJ031tDRPVjk';
+const SURL='https://papimnhnmnbkmtczshaa.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhcGltbmhubW5ia210Y3pzaGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjE5ODYsImV4cCI6MjA5Mzg5Nzk4Nn0.FWW7betV-K59LepczG9oKKYe7V1kI1krJ031tDRPVjk';
 const sb=supabase.createClient(SURL,SKEY);
-const isDash=window.location.href.includes('owner-dashboard-secret');
-if(isDash){document.getElementById('bookingPage').classList.add('hidden');document.getElementById('dashboardPage').classList.remove('hidden');initDashboard();}
-let cfg={whatsapp_number:'919784619102',avg_wait_minutes:25,current_token:0,salon_name:'Arun Saloon'};
-async function loadCfg(){const{data}=await sb.from('settings').select('*').eq('id',1).single();if(data)cfg=data;return cfg;}
+let cfg={whatsapp_number:'919784619102',avg_wait_minutes:25,current_token:0};
+
+async function loadCfg(){
+  const{data}=await sb.from('settings').select('*').eq('id',1).single();
+  if(data)cfg=data;
+}
+
 async function bookSlot(){
   const ph=document.getElementById('phoneInput').value.replace(/\D/g,'');
-  const err=document.getElementById('bookingError');const btn=document.getElementById('bookBtn');
+  const err=document.getElementById('bookingError');
+  const btn=document.getElementById('bookBtn');
   if(!ph||ph.length<10){err.textContent='Sahi 10 digit number daalo';err.classList.remove('hidden');return;}
-  err.classList.add('hidden');btn.disabled=true;btn.textContent='Booking...';
+  err.classList.add('hidden');
+  btn.disabled=true;btn.textContent='Booking...';
   try{
     await loadCfg();
     const today=new Date().toISOString().split('T')[0];
     const{data:ex}=await sb.from('tokens').select('*').eq('phone',ph).eq('date',today).maybeSingle();
     let tok=ex;
-    if(!tok){const{data:last}=await sb.from('tokens').select('token_number').eq('date',today).order('token_number',{ascending:false}).limit(1);
-    const next=last&&last.length>0?last[0].token_number+1:1;
-    const{data:nt}=await sb.from('tokens').insert({phone:ph,token_number:next,date:today}).select().single();tok=nt;}
+    if(!tok){
+      const{data:last}=await sb.from('tokens').select('token_number').eq('date',today).order('token_number',{ascending:false}).limit(1);
+      const next=last&&last.length>0?last[0].token_number+1:1;
+      const{data:nt,error:e}=await sb.from('tokens').insert({phone:ph,token_number:next,date:today}).select().single();
+      if(e)throw e;
+      tok=nt;
+    }
     const pos=Math.max(1,tok.token_number-(cfg.current_token||0));
     const wait=pos*cfg.avg_wait_minutes;
     document.getElementById('tokenNum').textContent='#'+tok.token_number;
@@ -165,17 +109,20 @@ async function bookSlot(){
     document.getElementById('ownerPhone').textContent='+'+cfg.whatsapp_number;
     document.getElementById('bookingForm').classList.add('hidden');
     document.getElementById('tokenConfirm').classList.remove('hidden');
-  }catch(e){err.textContent='Kuch gadbad hui';err.classList.remove('hidden');}
+  }catch(e){
+    document.getElementById('bookingError').textContent='Kuch gadbad hui, dobara try karo';
+    document.getElementById('bookingError').classList.remove('hidden');
+  }
   btn.disabled=false;btn.textContent='BOOK MY SLOT →';
 }
-function resetBooking(){document.getElementById('phoneInput').value='';document.getElementById('bookingForm').classList.remove('hidden');document.getElementById('tokenConfirm').classList.add('hidden');}
-async function initDashboard(){await loadCfg();document.getElementById('sWhatsapp').value=cfg.whatsapp_number;document.getElementById('sAvgWait').value=cfg.avg_wait_minutes;document.getElementById('salonName').value=cfg.salon_name||'Arun Saloon';await refreshDash();setInterval(refreshDash,5000);genQR();}
-async function refreshDash(){await loadCfg();const today=new Date().toISOString().split('T')[0];const{data:toks}=await sb.from('tokens').select('*').eq('date',today).order('token_number',{ascending:true});const cur=cfg.current_token||0;const waiting=(toks||[]).filter(t=>t.token_number>cur);const curCust=(toks||[]).find(t=>t.token_number===cur);document.getElementById('nowServing').textContent='#'+cur;document.getElementById('servingPhone').textContent=curCust?'📞 +'+curCust.phone:'';document.getElementById('waitingCount').textContent=waiting.length;document.getElementById('avgWaitDisplay').textContent=cfg.avg_wait_minutes+'m';document.getElementById('queueBadge').textContent=waiting.length+' WAITING';const list=document.getElementById('queueList');if(!waiting.length){list.innerHTML='<div class="queue-empty">Abhi koi waiting nahi 🎉</div>';return;}list.innerHTML=waiting.map((t,i)=>`<div class="token-row"><div class="token-badge-d">#${t.token_number}</div><div class="token-info"><div class="token-phone">📞 ${t.phone}</div><div class="token-time">${new Date(t.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="token-wait"><div class="token-wait-label">APPROX</div><div class="token-wait-value">${(i+1)*cfg.avg_wait_minutes}m</div></div></div>`).join('');}const today=new Date().toISOString().split('T')[0];if(cfg.last_reset!==today){await sb.from('settings').update({current_token:0,last_reset:today}).eq('id',1);cfg.current_token=0;}
-async function nextCustomer(){const next=(cfg.current_token||0)+1;await sb.from('settings').update({current_token:next}).eq('id',1);await refreshDash();}
-function toggleSettings(){document.getElementById('settingsPanel').classList.toggle('hidden');}
-async function saveSettings(){await sb.from('settings').update({salon_name:document.getElementById('salonName').value,whatsapp_number:document.getElementById('sWhatsapp').value,avg_wait_minutes:parseInt(document.getElementById('sAvgWait').value)}).eq('id',1);alert('Saved! ✅');toggleSettings();await refreshDash();}
-function genQR(){QRCode.toCanvas(document.getElementById('qrCanvas'),'https://arun-pi.vercel.app',{width:200,margin:2});}
-document.getElementById('phoneInput')?.addEventListener('keypress',e=>{if(e.key==='Enter')bookSlot();});
+
+function resetBooking(){
+  document.getElementById('phoneInput').value='';
+  document.getElementById('bookingForm').classList.remove('hidden');
+  document.getElementById('tokenConfirm').classList.add('hidden');
+}
+
+document.getElementById('phoneInput').addEventListener('keypress',e=>{if(e.key==='Enter')bookSlot();});
 </script>
 </body>
 </html>
